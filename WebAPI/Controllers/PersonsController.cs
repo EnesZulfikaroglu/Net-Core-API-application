@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Entities.Concrete;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebAPI.Controllers
 {
@@ -21,6 +22,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getall")]
+        [Authorize(Roles = "User, Admin")]
         public IActionResult GetList()
         {
             var result = _personService.GetList();
@@ -36,6 +38,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getlistbycity")]
+        [Authorize(Roles = "User,Admin")]
         public IActionResult GetListByCity(String city)
         {
             var result = _personService.GetListByCity(city);
@@ -51,6 +54,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getbyid")]
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Get(int id)
         {
             var result = _personService.GetById(id);
@@ -66,6 +70,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("add")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Add(Person person)
         {
             var result = _personService.Add(person);
@@ -81,6 +86,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("delete")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(Person person)
         {
             var result = _personService.Delete(person);
@@ -96,6 +102,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("update")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Update(Person person)
         {
             var result = _personService.Update(person);
