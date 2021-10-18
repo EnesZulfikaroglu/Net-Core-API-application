@@ -5,7 +5,7 @@ using Core.Entities.Concrete;
 
 namespace Core.Utilities.Security.Jwt
 {
-    interface ITokenHelper
+    public interface ITokenHelper
     {
         AccessToken createToken(User user, List<OperationClaim> operationClaims);
     }
