@@ -19,6 +19,11 @@ namespace WebAPI.Controllers
             _authService = authService;
         }
 
+        /// <summary>
+        /// Login with an existing user
+        /// </summary>
+        /// <param name="userForLoginDto"></param>
+        /// <returns></returns>
         [HttpPost("login")]
         public IActionResult Login(UserForLoginDto userForLoginDto)
         {
@@ -38,6 +43,11 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
         }
 
+        /// <summary>
+        /// Register and create new user
+        /// </summary>
+        /// <param name="userForRegisterDto"></param>
+        /// <returns></returns>
         [HttpPost("register")]
         public IActionResult Register(UserForRegisterDto userForRegisterDto)
         {

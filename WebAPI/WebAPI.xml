@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebAPI</name>
+    </assembly>
+    <members>
+        <member name="M:WebAPI.Controllers.AuthController.Login(Entities.Dtos.UserForLoginDto)">
+            <summary>
+            Login with an existing user
+            </summary>
+            <param name="userForLoginDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebAPI.Controllers.AuthController.Register(Entities.Dtos.UserForRegisterDto)">
+            <summary>
+            Register and create new user
+            </summary>
+            <param name="userForRegisterDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebAPI.Controllers.PersonsController.GetList">
+            <summary>
+            Get the list of all persons - User authentication is required
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebAPI.Controllers.PersonsController.GetListByCity(System.String)">
+            <summary>
+            Get a list of the persons from specified city - User authentication is required
+            </summary>
+            <param name="city"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebAPI.Controllers.PersonsController.Get(System.Int32)">
+            <summary>
+            Get the person information by its id - User authentication is required
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebAPI.Controllers.PersonsController.Add(Entities.Concrete.Person)">
+            <summary>
+            Add a new person to database - Admin authentication is required
+            </summary>
+            <param name="person"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebAPI.Controllers.PersonsController.Delete(Entities.Concrete.Person)">
+            <summary>
+            Delete a person from database - Admin authentication is required
+            </summary>
+            <param name="person"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebAPI.Controllers.PersonsController.Update(Entities.Concrete.Person)">
+            <summary>
+            Update a person on database - Admin authentication is required
+            </summary>
+            <param name="person"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

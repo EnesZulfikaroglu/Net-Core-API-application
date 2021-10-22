@@ -14,6 +14,7 @@ using Core.Utilities.Security.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Core.Utilities.Security.Encryption;
+using NSwag;
 
 namespace WebAPI
 {
@@ -29,6 +30,9 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            /* Redis Configuration
+            services.AddStackExchangeRedisCache(action=>
+                action.Configuration = "localhost:6379)*/
             services.AddControllers();
             services.AddCors(options=>
             {
@@ -52,6 +56,20 @@ namespace WebAPI
                 };
 
             });
+            services.AddSwaggerDocument(config =>
+            {
+                config.PostProcess = (doc =>
+                {
+                    doc.Info.Title = "Persons API";
+                    doc.Info.Version = "1.0.2";
+                    doc.Info.Contact = new NSwag.OpenApiContact()
+                    {
+                        Name = "Enes Zulfikaroglu - Altamira",
+                        Url = "https://www.altamira.com.tr/"
+                    };
+                });
+            });
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,6 +88,9 @@ namespace WebAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
 
             app.UseEndpoints(endpoints =>
             {
