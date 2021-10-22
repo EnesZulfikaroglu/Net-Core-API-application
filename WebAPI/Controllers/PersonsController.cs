@@ -21,6 +21,10 @@ namespace WebAPI.Controllers
             _personService = personService;
         }
 
+        /// <summary>
+        /// Get the list of all persons - User authentication is required
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("getall")]
         [Authorize(Roles = "User, Admin")]
         public IActionResult GetList()
@@ -37,6 +41,11 @@ namespace WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Get a list of the persons from specified city - User authentication is required
+        /// </summary>
+        /// <param name="city"></param>
+        /// <returns></returns>
         [HttpGet("getlistbycity")]
         [Authorize(Roles = "User,Admin")]
         public IActionResult GetListByCity(String city)
@@ -53,6 +62,11 @@ namespace WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Get the person information by its id - User authentication is required
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("getbyid")]
         [Authorize(Roles = "User,Admin")]
         public IActionResult Get(int id)
@@ -69,6 +83,11 @@ namespace WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Add a new person to database - Admin authentication is required
+        /// </summary>
+        /// <param name="person"></param>
+        /// <returns></returns>
         [HttpPost("add")]
         [Authorize(Roles = "Admin")]
         public IActionResult Add(Person person)
@@ -85,6 +104,11 @@ namespace WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Delete a person from database - Admin authentication is required
+        /// </summary>
+        /// <param name="person"></param>
+        /// <returns></returns>
         [HttpPost("delete")]
         [Authorize(Roles = "Admin")]
         public IActionResult Delete(Person person)
@@ -101,6 +125,11 @@ namespace WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Update a person on database - Admin authentication is required
+        /// </summary>
+        /// <param name="person"></param>
+        /// <returns></returns>
         [HttpPost("update")]
         [Authorize(Roles = "Admin")]
         public IActionResult Update(Person person)
