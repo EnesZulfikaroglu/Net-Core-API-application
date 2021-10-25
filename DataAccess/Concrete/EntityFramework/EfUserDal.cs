@@ -7,6 +7,7 @@ using Core.Entities.Concrete;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework.Contexts;
 using Entities.Concrete;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Concrete.EntityFramework
 {
@@ -23,6 +24,16 @@ namespace DataAccess.Concrete.EntityFramework
                     select new OperationClaim {Id = OperationClaim.Id, Name = OperationClaim.Name};
 
                 return result.ToList();
+            }
+        }
+
+        public void SetClaims(UserOperationClaim userOperationClaim)
+        {
+            using (var context = new AltamiraDBContext())
+            {
+                var addedEntity = context.Entry(userOperationClaim);
+                addedEntity.State = EntityState.Added;
+                context.SaveChanges();
             }
         }
     }
