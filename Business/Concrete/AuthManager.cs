@@ -7,6 +7,7 @@ using Core.Entities.Concrete;
 using Core.Utilities.Results;
 using Core.Utilities.Security.Hashing;
 using Core.Utilities.Security.Jwt;
+using DataAccess.Abstract;
 using Entities.Dtos;
 
 namespace Business.Concrete
@@ -15,11 +16,13 @@ namespace Business.Concrete
     {
         private IUserService _userService;
         private ITokenHelper _tokenHelper;
+        private IUserDal _userDal;
 
-        public AuthManager(IUserService userService, ITokenHelper tokenHelper)
+        public AuthManager(IUserService userService, ITokenHelper tokenHelper, IUserDal userDal)
         {
             _userService = userService;
             _tokenHelper = tokenHelper;
+            _userDal = userDal;
         }
 
         public IDataResult<User> Register(UserForRegisterDto userForRegisterDto)
@@ -36,7 +39,17 @@ namespace Business.Concrete
                 PasswordSalt = passwordSalt,
                 Status = true
             };
+
             _userService.Add(user);
+
+            var userOperationClaim = new UserOperationClaim()
+            {
+                UserId = user.Id,
+                OperationClaimId = 2
+            };
+
+            _userDal.SetClaims(userOperationClaim);
+            
             return new SuccessDataResult<User>(user, Messages.SuccessfulRegister);
         }
 
