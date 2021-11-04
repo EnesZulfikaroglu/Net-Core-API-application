@@ -7,6 +7,8 @@ using Business.Concrete;
 using Core.Utilities.Security.Jwt;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
+using Core.Utilities.Cache;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace Business.DependencyResolvers.Autofac
 {
@@ -22,6 +24,9 @@ namespace Business.DependencyResolvers.Autofac
 
             builder.RegisterType<AuthManager>().As<IAuthService>();
             builder.RegisterType<JwtHelper>().As<ITokenHelper>();
+
+            builder.RegisterType<RedisCacheSettings>();
+            builder.RegisterType<ResponseCacheService>().As<IResponseCacheService>();
         }
     }
 }

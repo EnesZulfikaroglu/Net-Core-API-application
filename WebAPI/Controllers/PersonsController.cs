@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Authorization;
+using Core.Utilities.Cache;
 
 namespace WebAPI.Controllers
 {
@@ -26,6 +27,7 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("getall")]
+        [Cached(600)]
         [Authorize(Roles = "User, Admin")]
         public IActionResult GetList()
         {
@@ -47,6 +49,7 @@ namespace WebAPI.Controllers
         /// <param name="city"></param>
         /// <returns></returns>
         [HttpGet("getlistbycity")]
+        [Cached(600)]
         [Authorize(Roles = "User,Admin")]
         public IActionResult GetListByCity(String city)
         {
@@ -68,6 +71,7 @@ namespace WebAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("getbyid")]
+        //[Cached(600)]
         [Authorize(Roles = "User,Admin")]
         public IActionResult Get(int id)
         {
