@@ -8,33 +8,37 @@ using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework.Contexts;
 using Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
+using DataAccess.Concrete.EntityFramework.Repositories;
 
 namespace DataAccess.Concrete.EntityFramework
 {
-    public class EfUserDal : EfEntityRepositoryBase<User, AltamiraDBContext>, IUserDal
+    public class EfUserDal : GenericRepositoryBase<User>, IUserDal
     {
+        public AltamiraDBContext _context { get; set; }
+        public EfUserDal(AltamiraDBContext context) : base(context)
+        {
+            _context = context;
+        }
         public List<OperationClaim> GetClaims(User user)
         {
-            using (var context = new AltamiraDBContext())
-            {
-                var result = from OperationClaim in context.OperationClaims
-                    join UserOperationClaim in context.UserOperationClaims 
+            
+                var result = from OperationClaim in _context.OperationClaims
+                    join UserOperationClaim in _context.UserOperationClaims 
                         on OperationClaim.Id equals UserOperationClaim.OperationClaimId
                     where UserOperationClaim.UserId == user.Id
                     select new OperationClaim {Id = OperationClaim.Id, Name = OperationClaim.Name};
 
                 return result.ToList();
-            }
+            
         }
 
         public void SetClaims(UserOperationClaim userOperationClaim)
         {
-            using (var context = new AltamiraDBContext())
-            {
-                var addedEntity = context.Entry(userOperationClaim);
+           
+                var addedEntity = _context.Entry(userOperationClaim);
                 addedEntity.State = EntityState.Added;
-                context.SaveChanges();
-            }
+                _context.SaveChanges();
+          
         }
     }
 }

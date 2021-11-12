@@ -25,9 +25,10 @@ namespace Core.Utilities.Cache
             // Check if the request is cached
 
             var cacheSettings = context.HttpContext.RequestServices.GetRequiredService<RedisCacheSettings>();
-
+            Console.WriteLine("flag 00");
             if (!cacheSettings.Enabled)
             {
+                Console.WriteLine("flag 01");
                 await next();
                 return;
             }
@@ -38,6 +39,8 @@ namespace Core.Utilities.Cache
 
             var cacheKey = GenerateCacheKeyFromRequest(context.HttpContext.Request);
             var cachedResponse = await cacheService.GetCachedResponseAsync(cacheKey);
+            Console.WriteLine("flag 0");
+            Console.WriteLine(cachedResponse);
 
             if (!string.IsNullOrEmpty(cachedResponse))
             {
@@ -57,6 +60,8 @@ namespace Core.Utilities.Cache
             {
                 await cacheService.CacheResponseAsync(cacheKey, okObjectResult,
                     TimeSpan.FromSeconds(_timeToLiveSeconds));
+                Console.WriteLine("flag 1");
+                Console.WriteLine(okObjectResult.ToString());
             }
         }
 

@@ -27,6 +27,7 @@ namespace Core.Utilities.Security.Jwt
 
         public AccessToken createToken(User user, List<OperationClaim> operationClaims)
         {
+            Console.WriteLine("Flag JwtHelper");
             var securityKey = SecurityKeyHelper.CreateSecurityKey(_tokenOptions.SecurityKey);
             var signingCredentials = SigningCredentialsHelper.CreateSigningCredentials(securityKey);
             

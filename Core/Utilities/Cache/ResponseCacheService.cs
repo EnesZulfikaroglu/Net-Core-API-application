@@ -34,6 +34,8 @@ namespace Core.Utilities.Cache
         public async Task<string> GetCachedResponseAsync(string cacheKey)
         {
             var cachedResponse = await _distributedCache.GetStringAsync(cacheKey);
+            Console.WriteLine("flag 3");
+            Console.WriteLine(cachedResponse);
             return string.IsNullOrEmpty(cachedResponse) ? null : cachedResponse;
         }
     }
