@@ -10,37 +10,49 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Utilities.Security.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Core.Utilities.Security.Encryption;
+using DataAccess.Concrete.EntityFramework.Contexts;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using TokenOptions = Core.Utilities.Security.Jwt.TokenOptions;
+using DataAccess.Concrete.EntityFramework;
+using Core.DataAccess.EntityFramework;
 
 namespace WebAPI
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Redis Configuration
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = Configuration.GetValue<string>("RedisCacheSettings: ConnectionString");
-            });
 
             services.AddControllers();
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowOrigin",
                     builder => builder.WithOrigins("http://localhost:3000"));
+            });
+
+            var connection = Configuration.GetValue<string>("ConnectionStrings:DockerContainerConnection");
+            services.AddDbContext<AltamiraDBContext>(options =>
+            options.UseSqlServer(connection));
+            
+            // Redis Configuration
+            services.AddStackExchangeRedisCache(options =>
+            {
+
+                options.Configuration = Configuration.GetValue<string>("RedisCacheSettings:ConnectionString");
             });
 
             var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
@@ -179,6 +191,8 @@ namespace WebAPI
 
             app.UseCors(builder => builder.WithOrigins("http://localhost:3000").AllowAnyHeader());
 
+            PrepDB.PrepPopulation(app);
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -196,7 +210,7 @@ namespace WebAPI
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
             });
-
+            
         }
     }
 }

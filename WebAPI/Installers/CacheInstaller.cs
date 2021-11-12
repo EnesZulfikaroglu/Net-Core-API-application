@@ -23,7 +23,7 @@ namespace WebAPI.Installers
             }
 
             services.AddStackExchangeRedisCache(options => options.Configuration = redisCacheSettings.ConnectionString);
-            //services.AddSingleton<IResponseCacheService, ResponseCacheService>();
+            services.AddSingleton<IResponseCacheService, ResponseCacheService>();
         }
     }
 }

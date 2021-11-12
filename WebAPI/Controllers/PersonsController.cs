@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
         public IActionResult GetList()
         {
             var result = _personService.GetList();
-
+            Console.WriteLine("flag 4 PersonsController");
             if (result.Success)
             {
                 return Ok(result.Data);
@@ -71,7 +71,7 @@ namespace WebAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("getbyid")]
-        //[Cached(600)]
+        [Cached(600)]
         [Authorize(Roles = "User,Admin")]
         public IActionResult Get(int id)
         {

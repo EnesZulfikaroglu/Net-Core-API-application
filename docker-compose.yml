@@ -1,0 +1,35 @@
+version: '3.6'
+
+networks:
+  localdev:
+    name: localdev
+
+services:
+    persons-api:
+        build: ./
+        restart: always
+        ports:
+            - "7000:80"
+        depends_on:
+            - ms-sql-server
+            - redis
+        networks:
+            - localdev
+
+    ms-sql-server:
+        image:  mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+        container_name: ms-sql-server
+        environment:
+            - ACCEPT_EULA=Y
+            - SA_PASSWORD=enes123456
+            - MSSQL_PID=Express
+        ports:
+            - "1433:1433"
+        networks:
+            - localdev
+
+    redis:
+        image: redis
+        container_name: redis
+        ports:
+            - "6379:6379"
