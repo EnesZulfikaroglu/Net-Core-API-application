@@ -25,6 +25,8 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<AuthManager>().As<IAuthService>();
             builder.RegisterType<JwtHelper>().As<ITokenHelper>();
 
+            builder.RegisterType<RedisManager>().As<IRedisService>();
+
             builder.RegisterType<RedisCacheSettings>();
             builder.RegisterType<ResponseCacheService>().As<IResponseCacheService>();
         }
