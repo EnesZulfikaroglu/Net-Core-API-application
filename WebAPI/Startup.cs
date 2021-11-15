@@ -19,13 +19,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using TokenOptions = Core.Utilities.Security.Jwt.TokenOptions;
 using DataAccess.Concrete.EntityFramework;
-using Core.DataAccess.EntityFramework;
+using WebAPI.Installers;
+using Core.Utilities.Cache;
 
 namespace WebAPI
 {
     public class Startup
     {
         public IConfiguration Configuration { get; }
+        private RedisCacheSettings _redisCacheSettings;
 
         public Startup(IConfiguration configuration)
         {
@@ -44,16 +46,26 @@ namespace WebAPI
                     builder => builder.WithOrigins("http://localhost:3000"));
             });
 
-            var connection = Configuration.GetValue<string>("ConnectionStrings:DockerContainerConnection");
+            var connection = Configuration.GetValue<string>("ConnectionStrings:DockerAppConnection");
             services.AddDbContext<AltamiraDBContext>(options =>
             options.UseSqlServer(connection));
-            
+
             // Redis Configuration
             services.AddStackExchangeRedisCache(options =>
             {
 
                 options.Configuration = Configuration.GetValue<string>("RedisCacheSettings:ConnectionString");
             });
+
+            var redisCacheSettings = new RedisCacheSettings();
+            _redisCacheSettings = Configuration.GetSection("RedisCacheSettings").Get<RedisCacheSettings>();
+            services.AddSingleton(_redisCacheSettings);
+
+            if (_redisCacheSettings.Enabled)
+            {
+                services.AddStackExchangeRedisCache(options => options.Configuration = redisCacheSettings.ConnectionString);
+                services.AddSingleton<IResponseCacheService, ResponseCacheService>();
+            }
 
             var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 

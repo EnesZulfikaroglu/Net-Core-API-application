@@ -16,10 +16,12 @@ namespace WebAPI.Controllers
     public class PersonsController : ControllerBase
     {
         private IPersonService _personService;
+        private IRedisService _redisService;
 
-        public PersonsController(IPersonService personService)
+        public PersonsController(IPersonService personService, IRedisService redisService)
         {
             _personService = personService;
+            _redisService = redisService;
         }
 
         /// <summary>
@@ -27,20 +29,30 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("getall")]
-        [Cached(600)]
+        //[Cached(600)]
         [Authorize(Roles = "User, Admin")]
         public IActionResult GetList()
         {
+            if (_redisService.IsKeyExist("getall"))
+            {
+                Console.WriteLine("Using Redis...");
+                return Ok(_redisService.GetList<List<Person>>("getall"));
+            }
+
+            Console.WriteLine("Not using Redis...");
+            
             var result = _personService.GetList();
-            Console.WriteLine("flag 4 PersonsController");
+
             if (result.Success)
             {
+                _redisService.StoreList<List<Person>>("getall", result.Data, TimeSpan.MaxValue);
                 return Ok(result.Data);
             }
             else
             {
                 return BadRequest(result.Message);
             }
+            
         }
 
         /// <summary>
@@ -49,14 +61,23 @@ namespace WebAPI.Controllers
         /// <param name="city"></param>
         /// <returns></returns>
         [HttpGet("getlistbycity")]
-        [Cached(600)]
+        //[Cached(600)]
         [Authorize(Roles = "User,Admin")]
         public IActionResult GetListByCity(String city)
         {
+            if (_redisService.IsKeyExist($"getlistbycity-{city}"))
+            {
+                Console.WriteLine("Using Redis...");
+                return Ok(_redisService.GetList<List<Person>>($"getlistbycity-{city}"));
+            }
+
+            Console.WriteLine("Not using Redis...");
+
             var result = _personService.GetListByCity(city);
 
             if (result.Success)
             {
+                _redisService.StoreList<List<Person>>($"getlistbycity-{city}", result.Data, TimeSpan.MaxValue);
                 return Ok(result.Data);
             }
             else
@@ -75,10 +96,19 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "User,Admin")]
         public IActionResult Get(int id)
         {
+            if (_redisService.IsKeyExist($"getbyid-{id}"))
+            {
+                Console.WriteLine("Using Redis...");
+                return Ok(_redisService.GetList<Person>($"getbyid-{id}"));
+            }
+
+            Console.WriteLine("Not using Redis...");
+
             var result = _personService.GetById(id);
 
             if (result.Success)
             {
+                _redisService.StoreList<Person>($"getbyid-{id}", result.Data, TimeSpan.MaxValue);
                 return Ok(result.Data);
             }
             else
