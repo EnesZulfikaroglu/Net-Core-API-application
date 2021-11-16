@@ -13,14 +13,14 @@ namespace Core.Utilities.Cache
         {
 
 
-            var _redisHost = "172.18.0.3";
+            var _redisHost = "redis";
             var _port = 6379;
 
             _redisEndpoint = new RedisEndpoint(_redisHost, _port);
 
         }
 
-        // Key Redis veritabanında var ise true döner
+        // Returns true if Key is exist on Redis database
         public bool IsKeyExist(string key)
         {
             using (var client = new RedisClient(_redisEndpoint))
@@ -29,7 +29,7 @@ namespace Core.Utilities.Cache
             }
         }
 
-        // Key set edilir
+        // Setting Key and value
         public void SetKeyValue(string key, string value)
         {
 
@@ -42,7 +42,7 @@ namespace Core.Utilities.Cache
 
         }
 
-        // Key karşılık değeri geriye döndürülür.
+        // Getting the value of key
         public string GetKeyValue(string key)
         {
 
@@ -54,7 +54,7 @@ namespace Core.Utilities.Cache
 
         }
 
-        // Generic yapıda key kontrolü
+        // Generic Build - Setting
         public bool StoreList<T>(string key, T Value, TimeSpan timeout)
         {
 
@@ -76,7 +76,7 @@ namespace Core.Utilities.Cache
 
         }
 
-        // Generic: Key karşılık değeri döndürülür.
+        // Generic Build - Getting
         public T GetList<T>(string key)
         {
 

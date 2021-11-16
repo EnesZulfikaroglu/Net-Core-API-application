@@ -33,16 +33,29 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "User, Admin")]
         public IActionResult GetList()
         {
+            var watch = new System.Diagnostics.Stopwatch();  // To calculate execution time
+
             if (_redisService.IsKeyExist("getall"))
             {
+                watch.Start();
+
                 Console.WriteLine("Using Redis...");
-                return Ok(_redisService.GetList<List<Person>>("getall"));
+                var RedisResult = _redisService.GetList<List<Person>>("getall");
+
+                watch.Stop();
+                Console.WriteLine($"Execution time with Redis: {watch.ElapsedMilliseconds} ms");
+
+                return Ok(RedisResult);
             }
 
-            Console.WriteLine("Not using Redis...");
+            watch.Start();
             
+            Console.WriteLine("Not using Redis...");        
             var result = _personService.GetList();
 
+            watch.Stop();
+            Console.WriteLine($"Execution time without Redis: {watch.ElapsedMilliseconds} ms");
+            
             if (result.Success)
             {
                 _redisService.StoreList<List<Person>>("getall", result.Data, TimeSpan.MaxValue);
@@ -50,6 +63,7 @@ namespace WebAPI.Controllers
             }
             else
             {
+
                 return BadRequest(result.Message);
             }
             
@@ -65,15 +79,28 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "User,Admin")]
         public IActionResult GetListByCity(String city)
         {
+            var watch = new System.Diagnostics.Stopwatch();  // To calculate execution time
+
             if (_redisService.IsKeyExist($"getlistbycity-{city}"))
             {
+                watch.Start();
+
                 Console.WriteLine("Using Redis...");
-                return Ok(_redisService.GetList<List<Person>>($"getlistbycity-{city}"));
+                var RedisResult = _redisService.GetList<List<Person>>($"getlistbycity-{city}");
+
+                watch.Stop();
+                Console.WriteLine($"Execution time with Redis: {watch.ElapsedMilliseconds} ms");
+
+                return Ok(RedisResult);
             }
 
-            Console.WriteLine("Not using Redis...");
+            watch.Start();
 
+            Console.WriteLine("Not using Redis...");
             var result = _personService.GetListByCity(city);
+
+            watch.Stop();
+            Console.WriteLine($"Execution time without Redis: {watch.ElapsedMilliseconds} ms");
 
             if (result.Success)
             {
@@ -96,15 +123,28 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "User,Admin")]
         public IActionResult Get(int id)
         {
+            var watch = new System.Diagnostics.Stopwatch();  // To calculate execution time
+
             if (_redisService.IsKeyExist($"getbyid-{id}"))
             {
+                watch.Start();
+
                 Console.WriteLine("Using Redis...");
-                return Ok(_redisService.GetList<Person>($"getbyid-{id}"));
+                var RedisResult = _redisService.GetList<Person>($"getbyid-{id}");
+
+                watch.Stop();
+                Console.WriteLine($"Execution time with Redis: {watch.ElapsedMilliseconds} ms");
+
+                return Ok(RedisResult);
             }
 
-            Console.WriteLine("Not using Redis...");
+            watch.Start();
 
+            Console.WriteLine("Not using Redis...");
             var result = _personService.GetById(id);
+
+            watch.Stop();
+            Console.WriteLine($"Execution time without Redis: {watch.ElapsedMilliseconds} ms");
 
             if (result.Success)
             {
