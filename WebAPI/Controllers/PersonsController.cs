@@ -17,11 +17,13 @@ namespace WebAPI.Controllers
     {
         private IPersonService _personService;
         private IRedisService _redisService;
+        private bool redisConnection  = false;
 
         public PersonsController(IPersonService personService, IRedisService redisService)
         {
             _personService = personService;
             _redisService = redisService;
+            redisConnection = _redisService.CheckConnection();
         }
 
         /// <summary>
@@ -35,7 +37,7 @@ namespace WebAPI.Controllers
         {
             var watch = new System.Diagnostics.Stopwatch();  // To calculate execution time
 
-            if (_redisService.IsKeyExist("getall"))
+            if (redisConnection && _redisService.IsKeyExist("getall"))
             {
                 watch.Start();
 
@@ -49,16 +51,19 @@ namespace WebAPI.Controllers
             }
 
             watch.Start();
-            
-            Console.WriteLine("Not using Redis...");        
+
+            Console.WriteLine("Not using Redis...");
             var result = _personService.GetList();
 
             watch.Stop();
             Console.WriteLine($"Execution time without Redis: {watch.ElapsedMilliseconds} ms");
-            
+
             if (result.Success)
             {
-                _redisService.StoreList<List<Person>>("getall", result.Data, TimeSpan.MaxValue);
+                if (redisConnection)
+                {
+                    _redisService.StoreList<List<Person>>("getall", result.Data, TimeSpan.MaxValue);
+                }
                 return Ok(result.Data);
             }
             else
@@ -66,7 +71,7 @@ namespace WebAPI.Controllers
 
                 return BadRequest(result.Message);
             }
-            
+
         }
 
         /// <summary>
