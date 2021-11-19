@@ -6,7 +6,8 @@ namespace Core.Utilities.Cache
 {
     public interface IRedisService
     {
-        bool CheckConnection();
+        bool CheckConnectionWithTimeLimit(TimeSpan timeSpan);
+        void CheckConnection();
         bool IsKeyExist(string key);
 
         void SetKeyValue(string key, string value);

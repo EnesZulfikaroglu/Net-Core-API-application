@@ -17,13 +17,13 @@ namespace WebAPI.Controllers
     {
         private IPersonService _personService;
         private IRedisService _redisService;
-        private bool redisConnection  = false;
+        private bool redisConnection;
 
         public PersonsController(IPersonService personService, IRedisService redisService)
         {
             _personService = personService;
             _redisService = redisService;
-            redisConnection = _redisService.CheckConnection();
+            redisConnection = _redisService.CheckConnectionWithTimeLimit(TimeSpan.FromMilliseconds(100));
         }
 
         /// <summary>
@@ -63,6 +63,11 @@ namespace WebAPI.Controllers
                 if (redisConnection)
                 {
                     _redisService.StoreList<List<Person>>("getall", result.Data, TimeSpan.MaxValue);
+                    Console.WriteLine("data got cached with Redis");
+                }
+                else
+                {
+                    Console.WriteLine("Can not connect to Redis");
                 }
                 return Ok(result.Data);
             }
@@ -86,7 +91,7 @@ namespace WebAPI.Controllers
         {
             var watch = new System.Diagnostics.Stopwatch();  // To calculate execution time
 
-            if (_redisService.IsKeyExist($"getlistbycity-{city}"))
+            if (redisConnection && _redisService.IsKeyExist($"getlistbycity-{city}"))
             {
                 watch.Start();
 
@@ -109,7 +114,15 @@ namespace WebAPI.Controllers
 
             if (result.Success)
             {
-                _redisService.StoreList<List<Person>>($"getlistbycity-{city}", result.Data, TimeSpan.MaxValue);
+                if (redisConnection)
+                {
+                    _redisService.StoreList<List<Person>>($"getlistbycity-{city}", result.Data, TimeSpan.MaxValue);
+                    Console.WriteLine("data got cached with Redis");
+                }
+                else
+                {
+                    Console.WriteLine("Can not connect to Redis");
+                }
                 return Ok(result.Data);
             }
             else
@@ -124,13 +137,13 @@ namespace WebAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("getbyid")]
-        [Cached(600)]
+        //[Cached(600)]
         [Authorize(Roles = "User,Admin")]
         public IActionResult Get(int id)
         {
             var watch = new System.Diagnostics.Stopwatch();  // To calculate execution time
 
-            if (_redisService.IsKeyExist($"getbyid-{id}"))
+            if (redisConnection && _redisService.IsKeyExist($"getbyid-{id}"))
             {
                 watch.Start();
 
@@ -153,7 +166,15 @@ namespace WebAPI.Controllers
 
             if (result.Success)
             {
-                _redisService.StoreList<Person>($"getbyid-{id}", result.Data, TimeSpan.MaxValue);
+                if (redisConnection)
+                {
+                    _redisService.StoreList<Person>($"getbyid-{id}", result.Data, TimeSpan.MaxValue);
+                    Console.WriteLine("data got cached with Redis");
+                }
+                else
+                {
+                    Console.WriteLine("Can not connect to Redis");
+                }
                 return Ok(result.Data);
             }
             else

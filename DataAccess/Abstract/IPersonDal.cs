@@ -8,6 +8,5 @@ namespace DataAccess.Abstract
 {
     public interface IPersonDal : IRepository<Person>
     {
-        void SeedData();
     }
 }
