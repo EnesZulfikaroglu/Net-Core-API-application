@@ -13,11 +13,28 @@ namespace Core.Utilities.Cache
         {
 
 
-            var _redisHost = "redis";
+            var _redisHost = "redis"; // The name of Redis container
             var _port = 6379;
 
             _redisEndpoint = new RedisEndpoint(_redisHost, _port);
 
+        }
+
+        // Returns true if connected successfully
+        public bool CheckConnection()
+        {
+            using (var client = new RedisClient(_redisEndpoint))
+            {
+                try
+                {
+                    return client.Ping();
+                }
+                catch
+                {
+                    Console.WriteLine("Connection Error");
+                    return false;
+                }
+            }
         }
 
         // Returns true if Key is exist on Redis database
@@ -71,7 +88,7 @@ namespace Core.Utilities.Cache
 
             catch (Exception)
             {
-                throw;
+                return false;
             }
 
         }
