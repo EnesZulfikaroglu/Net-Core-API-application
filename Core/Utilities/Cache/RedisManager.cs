@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Core.Utilities.Cache
 {
@@ -13,26 +14,39 @@ namespace Core.Utilities.Cache
         {
 
 
-            var _redisHost = "redis"; // The name of Redis container
+            var _redisHost = "redis"; // Name of the Redis container
             var _port = 6379;
 
             _redisEndpoint = new RedisEndpoint(_redisHost, _port);
 
         }
 
+        public bool CheckConnectionWithTimeLimit(TimeSpan timeSpan)
+        {
+            try
+            {
+                Task task = Task.Factory.StartNew(() => CheckConnection());
+                task.Wait(timeSpan);
+                return task.IsCompleted;
+            }
+            catch (AggregateException ae)
+            {
+                throw ae.InnerExceptions[0];
+            }
+        }
+
         // Returns true if connected successfully
-        public bool CheckConnection()
+        public void CheckConnection()
         {
             using (var client = new RedisClient(_redisEndpoint))
             {
                 try
                 {
-                    return client.Ping();
+                    client.SetValue("test", "true");
                 }
-                catch
+                catch (ServiceStack.Redis.RedisException)
                 {
-                    Console.WriteLine("Connection Error");
-                    return false;
+                    // pass
                 }
             }
         }
