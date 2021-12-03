@@ -1,0 +1,7 @@
+Admin:
+	username: default
+	password: default
+
+User:
+	username: string
+	password: string
