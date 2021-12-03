@@ -17,5 +17,7 @@ namespace Core.Utilities.Cache
         bool StoreList<T>(string key, T Value, TimeSpan timeout);
 
         T GetList<T>(string key);
+
+        void FlushAll();
     }
 }

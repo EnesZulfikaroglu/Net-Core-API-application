@@ -123,5 +123,14 @@ namespace Core.Utilities.Cache
 
             return result;
         }
+
+        public void FlushAll()
+        {
+            using (var client = new RedisClient(_redisEndpoint))
+            {
+                client.FlushAll();
+                Console.WriteLine("Flushed All");
+            }
+        }
     }
 }

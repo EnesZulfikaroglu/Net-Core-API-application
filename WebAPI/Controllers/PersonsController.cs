@@ -196,6 +196,10 @@ namespace WebAPI.Controllers
 
             if (result.Success)
             {
+                if(redisConnection)
+                {
+                    _redisService.FlushAll();
+                }
                 return Ok(result.Message);
             }
             else
@@ -217,6 +221,10 @@ namespace WebAPI.Controllers
 
             if (result.Success)
             {
+                if (redisConnection)
+                {
+                    _redisService.FlushAll();
+                }
                 return Ok(result.Message);
             }
             else
@@ -238,6 +246,10 @@ namespace WebAPI.Controllers
 
             if (result.Success)
             {
+                if (redisConnection)
+                {
+                    _redisService.FlushAll();
+                }
                 return Ok(result.Message);
             }
             else
