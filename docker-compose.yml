@@ -12,7 +12,6 @@ services:
             - "7000:80"
         depends_on:
             - ms-sql-server
-            - redis
         networks:
             - localdev
 
@@ -38,13 +37,5 @@ services:
             - "8090:8090"
         depends_on:
             - persons-api
-        networks:
-            - localdev
-
-    redis:
-        image: redis
-        container_name: redis
-        ports:
-            - "6379:6379"
         networks:
             - localdev
