@@ -1,0 +1,64 @@
+{
+  "version": 2,
+  "extra_config": {
+  },
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "name": "AltamiraDemo",
+  "port": 8080,
+  "endpoints": [
+    {
+      "endpoint": "/public-cat-api",
+      "method": "GET",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/fact",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "mapping": { "fact": "bilgi" },
+          "extra_config": {},
+          "is_collection": false,
+          "disable_host_sanitize": true,
+          "host": [
+            "https://catfact.ninja"
+          ]
+        }
+      ]
+    },    
+    {
+      "endpoint": "/employeesAndCatFact",
+      "method": "GET",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getall",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        },
+        {
+          "url_pattern": "/fact",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "mapping": { "fact": "bilgi" },
+          "extra_config": {},
+          "is_collection": false,
+          "disable_host_sanitize": true,
+          "host": [
+            "https://catfact.ninja"
+          ]
+        }
+      ]
+    }
+  ]
+}

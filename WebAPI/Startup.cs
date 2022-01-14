@@ -21,7 +21,6 @@ using TokenOptions = Core.Utilities.Security.Jwt.TokenOptions;
 using DataAccess.Concrete.EntityFramework;
 using WebAPI.Installers;
 using Core.Utilities.Cache;
-
 namespace WebAPI
 {
     public class Startup

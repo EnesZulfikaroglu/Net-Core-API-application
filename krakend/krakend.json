@@ -1,0 +1,337 @@
+{
+  "version": 2,
+  "extra_config": {
+  },
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "name": "AltamiraDemo",
+  "port": 8080,
+  "endpoints": [
+    {
+      "endpoint": "/employee/getall",
+      "method": "GET",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getall",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/public-cat-api",
+      "method": "GET",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/fact",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "mapping": { "fact": "bilgi" },
+          "extra_config": {},
+          "is_collection": false,
+          "disable_host_sanitize": true,
+          "host": [
+            "https://catfact.ninja"
+          ]
+        }
+      ]
+    },    
+    {
+      "endpoint": "/employeesAndCatFact",
+      "method": "GET",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getall",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        },
+        {
+          "url_pattern": "/fact",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "mapping": { "fact": "bilgi" },
+          "extra_config": {},
+          "is_collection": false,
+          "disable_host_sanitize": true,
+          "host": [
+            "https://catfact.ninja"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/employee/getbyid/{id}",
+      "method": "GET",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getbyid?id={id}",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": false,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/employee/getbycity",
+      "method": "GET",
+      "querystring_params":[  
+        "city"
+      ],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getlistbycity",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/auth/login",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/api/auth/login",
+          "encoding": "no-op",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": false,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/sequential/{id}",
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getbyid?id={id}",
+          "sd": "custom",
+          "method": "GET",
+          "is_collection": false,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        },
+        {
+          "url_pattern": "/api/persons/getlistbycity?city={resp0_city}",
+          "sd": "custom",
+          "method": "GET",
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ],
+      "extra_config": {
+        "github.com/devopsfaith/krakend/proxy": {
+          "sequential": true
+        }
+      }
+    },
+    {
+      "endpoint": "/static",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/api/fail-endpoint",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ],
+      "extra_config": {
+        "github.com/devopsfaith/krakend/proxy": {
+            "static": {
+                "strategy": "errored",
+                "data": {
+                    "error": {
+                        "message": "Hata durumunda bu mesaj döndürülsün"
+                    }
+                }
+            }
+          }
+      }
+    },
+    {
+      "endpoint": "/check/city/{City}",
+      "method": "GET",
+      "extra_config": {
+        "github.com/devopsfaith/krakend-cel": [
+          {
+            "check_expr": "req_params.City.matches('A.*')"
+          }
+        ]
+      },
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getlistbycity?city={City]",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/schema",
+      "querystring_params":[  
+        "*"
+      ],
+      "method": "POST",
+      "backend": [
+        {
+          "url_pattern": "/api/auth/login",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "POST",
+          "extra_config": {},
+          "is_collection": false,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ],
+      "extra_config":{
+        "github.com/devopsfaith/krakend-jsonschema": {
+          "type": "object",
+          "UserForLoginDto": {
+            "name": { "type": "string" },
+            "email": { "type": "string"}
+          }
+        }
+      }
+    },
+    {
+      "endpoint": "/stateless",
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getall",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        },
+        {
+          "url_pattern": "/api/fail-endpoint",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/get/{id}/deny",
+      "method": "GET",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getbyid?id={id}",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": false,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ],
+          "deny": [
+            "email",
+            "name",
+            "city",
+            "website"
+          ],
+          "group": "kullanıcı"
+        }
+      ]
+    },
+    {
+      "endpoint": "/get/{id}/allow",
+      "method": "GET",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getbyid?id={id}",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": false,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ],
+          "allow": [
+            "email",
+            "name",
+            "city"
+          ],
+          "group": "kullanıcı"
+        }
+      ]
+    }
+  ]
+}

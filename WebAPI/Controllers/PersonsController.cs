@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
         /// <returns></returns>
         [HttpGet("getall")]
         //[Cached(600)]
-        [Authorize(Roles = "User, Admin")]
+        //[Authorize(Roles = "User, Admin")]
         public IActionResult GetList()
         {
             var watch = new System.Diagnostics.Stopwatch();  // To calculate execution time
@@ -86,7 +86,7 @@ namespace WebAPI.Controllers
         /// <returns></returns>
         [HttpGet("getlistbycity")]
         //[Cached(600)]
-        [Authorize(Roles = "User,Admin")]
+        //[Authorize(Roles = "User,Admin")]
         public IActionResult GetListByCity(String city)
         {
             var watch = new System.Diagnostics.Stopwatch();  // To calculate execution time
@@ -138,7 +138,7 @@ namespace WebAPI.Controllers
         /// <returns></returns>
         [HttpGet("getbyid")]
         //[Cached(600)]
-        [Authorize(Roles = "User,Admin")]
+        //[Authorize(Roles = "User,Admin")]
         public IActionResult Get(int id)
         {
             var watch = new System.Diagnostics.Stopwatch();  // To calculate execution time
@@ -189,7 +189,7 @@ namespace WebAPI.Controllers
         /// <param name="person"></param>
         /// <returns></returns>
         [HttpPost("add")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult Add(Person person)
         {
             var result = _personService.Add(person);
@@ -214,7 +214,7 @@ namespace WebAPI.Controllers
         /// <param name="person"></param>
         /// <returns></returns>
         [HttpPost("delete")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult Delete(Person person)
         {
             var result = _personService.Delete(person);
@@ -239,7 +239,7 @@ namespace WebAPI.Controllers
         /// <param name="person"></param>
         /// <returns></returns>
         [HttpPost("update")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult Update(Person person)
         {
             var result = _personService.Update(person);

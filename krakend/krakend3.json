@@ -1,0 +1,53 @@
+{
+  "version": 2,
+  "extra_config": {
+  },
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "name": "AltamiraDemo",
+  "port": 8080,
+  "endpoints": [
+    {
+      "endpoint": "/employee/getbyid/{id}",
+      "method": "GET",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getbyid?id={id}",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": false,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/employee/getbycity",
+      "method": "GET",
+      "querystring_params":[  
+        "city"
+      ],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getlistbycity",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ]
+    }
+  ]
+}

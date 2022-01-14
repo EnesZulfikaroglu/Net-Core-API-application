@@ -1,0 +1,41 @@
+{
+  "version": 2,
+  "extra_config": {
+  },
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "name": "AltamiraDemo",
+  "port": 8080,
+  "endpoints": [
+    {
+      "endpoint": "/stateless",
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getall",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        },
+        {
+          "url_pattern": "/api/fail-endpoint",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ]
+    }
+  ]
+}
