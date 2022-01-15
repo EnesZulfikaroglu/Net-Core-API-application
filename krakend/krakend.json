@@ -389,7 +389,7 @@
       "querystring_params":[  
         "*"
       ],
-      "headers_to_pass":[  
+      "headers_to_pass":[
         "Site"
       ],
       "method": "GET",
