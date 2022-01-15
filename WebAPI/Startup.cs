@@ -202,10 +202,6 @@ namespace WebAPI
 
             app.UseCors(builder => builder.WithOrigins("http://localhost:3000").AllowAnyHeader());
 
-            PrepDB.PrepPopulation(app);
-
-            app.UseHttpsRedirection();
-
             app.UseRouting();
 
             app.UseAuthentication();
@@ -221,7 +217,8 @@ namespace WebAPI
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
             });
-            
+
+            PrepDB.PrepPopulation(app);
         }
     }
 }

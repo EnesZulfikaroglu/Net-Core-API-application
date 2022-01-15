@@ -2,7 +2,7 @@
   "version": 2,
   "extra_config": {
   },
-  "timeout": "15000ms",
+  "timeout": "20000ms",
   "output_encoding": "json",
   "name": "AltamiraDemo",
   "port": 8080,
@@ -261,7 +261,6 @@
           "encoding": "json",
           "sd": "custom",
           "method": "GET",
-          "extra_config": {},
           "is_collection": true,
           "disable_host_sanitize": true,
           "host": [
@@ -273,12 +272,12 @@
           "encoding": "json",
           "sd": "custom",
           "method": "GET",
-          "extra_config": {},
-          "is_collection": true,
+          "is_collection": false,
           "disable_host_sanitize": true,
           "host": [
             "http://persons-api:80"
-          ]
+          ],
+          "group": "fail-endpoint"
         }
       ]
     },
