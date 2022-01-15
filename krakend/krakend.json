@@ -332,6 +332,108 @@
           "group": "kullanıcı"
         }
       ]
+    },
+    {
+      "endpoint": "/handle/{endpointId}",
+      "querystring_params":[  
+        "*"
+      ],
+      "headers_to_pass":[  
+        "*"
+      ],
+      "method": "GET",
+      "extra_config": {
+
+      },
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getall",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {
+            "github.com/devopsfaith/krakend-cel": [
+              {
+                "check_expr": "req_params.EndpointId.matches('1')"
+              }
+            ]
+          },
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        },
+        {
+          "url_pattern": "/api/persons/getlistbycity?city=Ankara",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {
+            "github.com/devopsfaith/krakend-cel": [
+              {
+                "check_expr": "req_params.EndpointId.matches('2')"
+              }
+            ]
+          },
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/headerhandler",
+      "querystring_params":[  
+        "*"
+      ],
+      "headers_to_pass":[  
+        "*"
+      ],
+      "method": "GET",
+      "extra_config": {
+
+      },
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getall",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {
+            "github.com/devopsfaith/krakend-cel": [
+              {
+                "check_expr": "has(req_header.User-Agent)"
+              }
+            ]
+          },
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        },
+        {
+          "url_pattern": "/api/persons/getlistbycity?city=Ankara",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {
+            "github.com/devopsfaith/krakend-cel": [
+              {
+                "check_expr": "req_params.EndpointId.matches('2')"
+              }
+            ]
+          },
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ]
     }
   ]
 }
