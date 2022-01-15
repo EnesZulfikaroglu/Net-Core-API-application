@@ -233,6 +233,16 @@ namespace WebAPI.Controllers
             }
         }
 
+        [HttpGet("fail-endpoint")]
+        //[Authorize(Roles = "Admin")]
+        public IActionResult failEndpoint()
+        {
+
+            var result = _personService.GetById(2);
+            System.Threading.Thread.Sleep(10000);
+            return Ok(result.Data);
+        }
+
         /// <summary>
         /// Update a person on database - Admin authentication is required
         /// </summary>

@@ -2,8 +2,7 @@
   "version": 2,
   "extra_config": {
   },
-  "timeout": "3000ms",
-  "cache_ttl": "300s",
+  "timeout": "15000ms",
   "output_encoding": "json",
   "name": "AltamiraDemo",
   "port": 8080,
@@ -53,7 +52,7 @@
       "extra_config": {},
       "backend": [
         {
-          "url_pattern": "/api/persons/getall",
+          "url_pattern": "/api/persons/fail-endpoint",
           "encoding": "json",
           "sd": "custom",
           "method": "GET",
@@ -123,12 +122,13 @@
     {
       "endpoint": "/auth/login",
       "output_encoding": "no-op",
+      "method": "POST",
       "backend": [
         {
           "url_pattern": "/api/auth/login",
           "encoding": "no-op",
           "sd": "custom",
-          "method": "GET",
+          "method": "POST",
           "extra_config": {},
           "is_collection": false,
           "disable_host_sanitize": true,
@@ -248,7 +248,7 @@
           "type": "object",
           "UserForLoginDto": {
             "name": { "type": "string" },
-            "email": { "type": "string"}
+            "asdasd": { "type": "string"}
           }
         }
       }
@@ -269,7 +269,7 @@
           ]
         },
         {
-          "url_pattern": "/api/fail-endpoint",
+          "url_pattern": "/api/persons/fail-endpoint",
           "encoding": "json",
           "sd": "custom",
           "method": "GET",
@@ -330,6 +330,108 @@
             "city"
           ],
           "group": "kullanıcı"
+        }
+      ]
+    },
+    {
+      "endpoint": "/handle/{endpointId}",
+      "querystring_params":[  
+        "*"
+      ],
+      "headers_to_pass":[  
+        "*"
+      ],
+      "method": "GET",
+      "extra_config": {
+
+      },
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getall",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {
+            "github.com/devopsfaith/krakend-cel": [
+              {
+                "check_expr": "req_params.EndpointId.matches('1')"
+              }
+            ]
+          },
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        },
+        {
+          "url_pattern": "/api/persons/getlistbycity?city=Ankara",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {
+            "github.com/devopsfaith/krakend-cel": [
+              {
+                "check_expr": "req_params.EndpointId.matches('2')"
+              }
+            ]
+          },
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/headerhandler",
+      "querystring_params":[  
+        "*"
+      ],
+      "headers_to_pass":[  
+        "Site"
+      ],
+      "method": "GET",
+      "extra_config": {
+
+      },
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getall",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {
+            "github.com/devopsfaith/krakend-cel": [
+              {
+                "check_expr": "string(req_headers['Site'][0]).matches('AL')"
+              }
+            ]
+          },
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        },
+        {
+          "url_pattern": "/api/persons/getlistbycity?city=Ankara",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {
+            "github.com/devopsfaith/krakend-cel": [
+              {
+                "check_expr": "! string(req_headers['Site'][0]).matches('AL')"
+              }
+            ]
+          },
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
         }
       ]
     }
