@@ -93,7 +93,8 @@
           "disable_host_sanitize": true,
           "host": [
             "http://persons-api:80"
-          ]
+          ],
+          "group": "kullanici"
         }
       ]
     },
@@ -426,6 +427,137 @@
               }
             ]
           },
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/jwt",
+      "method": "GET",
+      "extra_config": {
+        "github.com/devopsfaith/krakend-jose/validator": {
+          "alg": "RS256",
+          "audience": ["www.altamira.com"],
+          "Issuer": ["www.altamira.com"],
+          "jwk-url": "https://albert-test.auth0.com/.well-known/jwks.json"
+        }
+      },
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getall",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/token",
+      "backend": [
+        {
+          "url_pattern": "/token.json"
+        }
+      ],
+      "extra_config": {
+        "github.com/devopsfaith/krakend-jose/signer": {
+          "alg": "HS256",
+          "kid": "sim2",
+          "keys-to-sign": ["access_token", "refresh_token"],
+          "jwk-url": "http://fake_api:8080/jwk/symmetric.json",
+          "disable_jwk_security": true
+        }
+      }
+    },
+    {
+      "endpoint": "/protected",
+      "method": "GET",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/api/persons/protected",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/seq-protected",
+      "method": "GET",
+      "headers_to_pass":[
+        "*"
+      ],
+      "querystring_params":[
+        "*"
+      ],
+      "extra_config": {
+        "github.com/devopsfaith/krakend/proxy": {
+          "sequential": true
+        }
+      },
+      "backend": [
+        {
+          "url_pattern": "/api/auth/login",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "POST",
+          "extra_config": {},
+          "is_collection": false,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        },
+        {
+          "url_pattern": "/api/persons/protected",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {
+            "github.com/devopsfaith/krakend-martian": {
+              "header.Modifier": {
+                "scope": ["request", "response"],
+                "name": "Authorization",
+                "value": "bearer {resp0_token}"
+              }
+            }
+          },
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/*",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getall",
+          "encoding": "no-op",
+          "sd": "custom",
+          "method": "POST",
+          "extra_config": {},
           "is_collection": true,
           "disable_host_sanitize": true,
           "host": [

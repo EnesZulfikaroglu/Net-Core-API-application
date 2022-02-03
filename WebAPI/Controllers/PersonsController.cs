@@ -267,5 +267,58 @@ namespace WebAPI.Controllers
                 return BadRequest(result.Message);
             }
         }
+
+        /// <summary>
+        /// Get the list of all persons - User authentication is required
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("protected")]
+        //[Cached(600)]
+        [Authorize(Roles = "User, Admin")]
+        public IActionResult Protected()
+        {
+            var watch = new System.Diagnostics.Stopwatch();  // To calculate execution time
+
+            if (redisConnection && _redisService.IsKeyExist("getall"))
+            {
+                watch.Start();
+
+                Console.WriteLine("Using Redis...");
+                var RedisResult = _redisService.GetList<List<Person>>("getall");
+
+                watch.Stop();
+                Console.WriteLine($"Execution time with Redis: {watch.ElapsedMilliseconds} ms");
+
+                return Ok(RedisResult);
+            }
+
+            watch.Start();
+
+            Console.WriteLine("Not using Redis...");
+            var result = _personService.GetList();
+
+            watch.Stop();
+            Console.WriteLine($"Execution time without Redis: {watch.ElapsedMilliseconds} ms");
+
+            if (result.Success)
+            {
+                if (redisConnection)
+                {
+                    _redisService.StoreList<List<Person>>("getall", result.Data, TimeSpan.MaxValue);
+                    Console.WriteLine("data got cached with Redis");
+                }
+                else
+                {
+                    Console.WriteLine("Can not connect to Redis");
+                }
+                return Ok(result.Data);
+            }
+            else
+            {
+
+                return BadRequest(result.Message);
+            }
+
+        }
     }
 }

@@ -21,6 +21,7 @@ using TokenOptions = Core.Utilities.Security.Jwt.TokenOptions;
 using DataAccess.Concrete.EntityFramework;
 using WebAPI.Installers;
 using Core.Utilities.Cache;
+
 namespace WebAPI
 {
     public class Startup
@@ -45,7 +46,7 @@ namespace WebAPI
                     builder => builder.WithOrigins("http://localhost:3000"));
             });
 
-            var connection = Configuration.GetValue<string>("ConnectionStrings:DockerAppConnection");
+            var connection = Configuration.GetValue<string>("ConnectionStrings:LocalConnection");
             services.AddDbContext<AltamiraDBContext>(options =>
             options.UseSqlServer(connection));
 
@@ -200,9 +201,11 @@ namespace WebAPI
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(builder => builder.WithOrigins("http://localhost:3000").AllowAnyHeader());
+            app.UseCors(builder => builder.WithOrigins("http://localhost:9000").AllowAnyHeader());
 
             app.UseRouting();
+
+            //app.UseHttpsRedirection();
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -218,7 +221,7 @@ namespace WebAPI
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
             });
 
-            PrepDB.PrepPopulation(app);
+            //PrepDB.PrepPopulation(app);
         }
     }
 }
