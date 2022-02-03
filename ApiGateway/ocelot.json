@@ -1,0 +1,210 @@
+{
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/employee/getall",
+      "UpstreamHttpMethod": [ "Get" ],
+
+      "DownstreamPathTemplate": "/api/persons/getall",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9000
+        }
+      ]
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9000
+        }
+      ],
+      "UpstreamPathTemplate": "/test/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    },
+
+    {
+      "UpstreamPathTemplate": "/prio/priority",
+      "Priority": 3,
+      "UpstreamHttpMethod": [ "Get" ],
+
+      "DownstreamPathTemplate": "/api/persons/getall",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9000
+        }
+      ]
+    },
+
+    {
+      "UpstreamPathTemplate": "/prio/{id}",
+      "Priority": 4,
+      "UpstreamHttpMethod": [ "Get" ],
+
+      "DownstreamPathTemplate": "/api/persons/getbyid?id={id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9000
+        }
+      ]
+    },
+
+    {
+      "UpstreamPathTemplate": "/employee/getbyid/{id}",
+      "UpstreamHttpMethod": [ "Get" ],
+
+      "DownstreamPathTemplate": "/api/persons/getbyid?id={id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9000
+        }
+      ]
+    },
+
+    {
+      "UpstreamPathTemplate": "/employee/getbyid?id={id}",
+      "UpstreamHttpMethod": [ "Get" ],
+
+      "DownstreamPathTemplate": "/api/persons/getbyid?id={id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9000
+        }
+      ]
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/persons/fail-endpoint",
+      "UpstreamPathTemplate": "/employee",
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9000
+        }
+      ],
+      "Key": "employee"
+    },
+    {
+      "DownstreamPathTemplate": "/api/persons/getbyid?id=3",
+      "UpstreamPathTemplate": "/all",
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9000
+        }
+      ],
+      "Key": "all"
+    },
+
+    {
+      "UpstreamPathTemplate": "/protected",
+      "UpstreamHttpMethod": [ "Get" ],
+
+      "DownstreamPathTemplate": "/api/persons/protected",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9000
+        }
+      ]
+    },
+
+    {
+      "UpstreamPathTemplate": "/add-header",
+      "UpstreamHttpMethod": [ "Get" ],
+      "UpstreamHeaderTransform": {
+        "Authorization": "bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJlbWFpbCI6ImRlZmF1bHQiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVmYXVsdCBEZWZhdWx0IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsIm5iZiI6MTY0Mjc2OTY4NywiZXhwIjoxNjQyNzczMjg3LCJpc3MiOiJ3d3cuYWx0YW1pcmEuY29tIiwiYXVkIjoid3d3LmFsdGFtaXJhLmNvbSJ9.whuH1ss9jksm7cCmz-1fwN1S4GQxSj0i9CfjTWzHpms"
+      },
+      "DownstreamPathTemplate": "/api/persons/protected",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9000
+        }
+      ]
+    },
+
+    {
+      "UpstreamPathTemplate": "/login",
+      "UpstreamHttpMethod": [ "POST" ],
+
+      "DownstreamPathTemplate": "/api/auth/login",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9000
+        }
+      ]
+    },
+
+    {
+      "UpstreamPathTemplate": "/delegate",
+      "UpstreamHttpMethod": [ "GET" ],
+
+      "DownstreamPathTemplate": "/api/persons/getall",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9000
+        }
+      ],
+
+      "DelegatingHandlers": [
+        "MyDelegatingHandler"
+      ]
+    }
+
+    /*{
+      "DownstreamPathTemplate": "/api/persons/protected",
+      "UpstreamPathTemplate": "/auth",
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9000
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "TestKey",
+        "AllowedScopes": []
+      }
+    }*/
+
+  ],
+  "Aggregates": [
+    {
+      "RouteKeys": [
+        "all",
+        "employee"
+      ],
+      "UpstreamPathTemplate": "/aggregate"
+    }
+  ]
+}

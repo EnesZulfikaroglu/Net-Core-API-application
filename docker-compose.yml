@@ -12,7 +12,6 @@ services:
             - "7000:80"
         depends_on:
             - ms-sql-server
-            - redis
         networks:
             - localdev
 
@@ -27,11 +26,16 @@ services:
             - "1433:1433"
         networks:
             - localdev
-
-    redis:
-        image: redis
-        container_name: redis
+    
+    krakend_ce:
+        image: devopsfaith/krakend:1.4.1
+        volumes:
+            - ./krakend:/etc/krakend
         ports:
-            - "6379:6379"
+            - "1234:1234"
+            - "8080:8080"
+            - "8090:8090"
+        depends_on:
+            - persons-api
         networks:
             - localdev

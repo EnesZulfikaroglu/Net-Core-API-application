@@ -6,11 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using Business.DependencyResolvers.Autofac;
 
-namespace WebAPI
+namespace ApiGateway
 {
     public class Program
     {
@@ -21,15 +18,13 @@ namespace WebAPI
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .ConfigureContainer<ContainerBuilder>(builder =>
+                .ConfigureAppConfiguration((host, config) =>
                 {
-                    builder.RegisterModule(new AutofacBusinessModule());
+                    config.AddJsonFile("ocelot.json");
                 })
-                
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseUrls("http://*:9000");
+                    webBuilder.UseUrls("http://*:8000");
                     webBuilder.UseStartup<Startup>();
                 });
     }

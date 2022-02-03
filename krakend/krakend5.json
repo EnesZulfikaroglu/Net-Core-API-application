@@ -1,0 +1,42 @@
+{
+  "version": 2,
+  "extra_config": {
+  },
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "name": "AltamiraDemo",
+  "port": 8080,
+  "endpoints": [
+    {
+      "endpoint": "/sequential/{id}",
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getbyid?id={id}",
+          "sd": "custom",
+          "method": "GET",
+          "is_collection": false,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        },
+        {
+          "url_pattern": "/api/persons/getlistbycity?city={resp0_city}",
+          "sd": "custom",
+          "method": "GET",
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ],
+      "extra_config": {
+        "github.com/devopsfaith/krakend/proxy": {
+          "sequential": true
+        }
+      }
+    }
+  ]
+}

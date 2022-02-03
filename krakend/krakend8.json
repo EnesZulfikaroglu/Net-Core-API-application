@@ -1,0 +1,42 @@
+{
+  "version": 2,
+  "extra_config": {
+  },
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "name": "AltamiraDemo",
+  "port": 8080,
+  "endpoints": [
+    {
+      "endpoint": "/schema",
+      "querystring_params":[  
+        "*"
+      ],
+      "method": "POST",
+      "backend": [
+        {
+          "url_pattern": "/api/auth/login",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "POST",
+          "extra_config": {},
+          "is_collection": false,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ],
+      "extra_config":{
+        "github.com/devopsfaith/krakend-jsonschema": {
+          "type": "object",
+          "UserForLoginDto": {
+            "name": { "type": "string" },
+            "email": { "type": "string"}
+          }
+        }
+      }
+    }
+  ]
+}

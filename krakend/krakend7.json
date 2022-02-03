@@ -1,0 +1,37 @@
+{
+  "version": 2,
+  "extra_config": {
+  },
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "name": "AltamiraDemo",
+  "port": 8080,
+  "endpoints": [
+    {
+      "endpoint": "/check/city/{City}",
+      "method": "GET",
+      "extra_config": {
+        "github.com/devopsfaith/krakend-cel": [
+          {
+            "check_expr": "req_params.City.matches('A.*')"
+          }
+        ]
+      },
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getlistbycity?city={City]",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ]
+    }
+  ]
+}

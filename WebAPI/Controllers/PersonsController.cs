@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
         /// <returns></returns>
         [HttpGet("getall")]
         //[Cached(600)]
-        [Authorize(Roles = "User, Admin")]
+        //[Authorize(Roles = "User, Admin")]
         public IActionResult GetList()
         {
             var watch = new System.Diagnostics.Stopwatch();  // To calculate execution time
@@ -86,7 +86,7 @@ namespace WebAPI.Controllers
         /// <returns></returns>
         [HttpGet("getlistbycity")]
         //[Cached(600)]
-        [Authorize(Roles = "User,Admin")]
+        //[Authorize(Roles = "User,Admin")]
         public IActionResult GetListByCity(String city)
         {
             var watch = new System.Diagnostics.Stopwatch();  // To calculate execution time
@@ -138,7 +138,7 @@ namespace WebAPI.Controllers
         /// <returns></returns>
         [HttpGet("getbyid")]
         //[Cached(600)]
-        [Authorize(Roles = "User,Admin")]
+        //[Authorize(Roles = "User,Admin")]
         public IActionResult Get(int id)
         {
             var watch = new System.Diagnostics.Stopwatch();  // To calculate execution time
@@ -189,7 +189,7 @@ namespace WebAPI.Controllers
         /// <param name="person"></param>
         /// <returns></returns>
         [HttpPost("add")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult Add(Person person)
         {
             var result = _personService.Add(person);
@@ -214,7 +214,7 @@ namespace WebAPI.Controllers
         /// <param name="person"></param>
         /// <returns></returns>
         [HttpPost("delete")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult Delete(Person person)
         {
             var result = _personService.Delete(person);
@@ -233,13 +233,23 @@ namespace WebAPI.Controllers
             }
         }
 
+        [HttpGet("fail-endpoint")]
+        //[Authorize(Roles = "Admin")]
+        public IActionResult failEndpoint()
+        {
+
+            var result = _personService.GetById(2);
+            System.Threading.Thread.Sleep(10000);
+            return Ok(result.Data);
+        }
+
         /// <summary>
         /// Update a person on database - Admin authentication is required
         /// </summary>
         /// <param name="person"></param>
         /// <returns></returns>
         [HttpPost("update")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult Update(Person person)
         {
             var result = _personService.Update(person);
@@ -256,6 +266,59 @@ namespace WebAPI.Controllers
             {
                 return BadRequest(result.Message);
             }
+        }
+
+        /// <summary>
+        /// Get the list of all persons - User authentication is required
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("protected")]
+        //[Cached(600)]
+        [Authorize(Roles = "User, Admin")]
+        public IActionResult Protected()
+        {
+            var watch = new System.Diagnostics.Stopwatch();  // To calculate execution time
+
+            if (redisConnection && _redisService.IsKeyExist("getall"))
+            {
+                watch.Start();
+
+                Console.WriteLine("Using Redis...");
+                var RedisResult = _redisService.GetList<List<Person>>("getall");
+
+                watch.Stop();
+                Console.WriteLine($"Execution time with Redis: {watch.ElapsedMilliseconds} ms");
+
+                return Ok(RedisResult);
+            }
+
+            watch.Start();
+
+            Console.WriteLine("Not using Redis...");
+            var result = _personService.GetList();
+
+            watch.Stop();
+            Console.WriteLine($"Execution time without Redis: {watch.ElapsedMilliseconds} ms");
+
+            if (result.Success)
+            {
+                if (redisConnection)
+                {
+                    _redisService.StoreList<List<Person>>("getall", result.Data, TimeSpan.MaxValue);
+                    Console.WriteLine("data got cached with Redis");
+                }
+                else
+                {
+                    Console.WriteLine("Can not connect to Redis");
+                }
+                return Ok(result.Data);
+            }
+            else
+            {
+
+                return BadRequest(result.Message);
+            }
+
         }
     }
 }

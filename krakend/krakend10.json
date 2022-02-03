@@ -1,0 +1,63 @@
+{
+  "version": 2,
+  "extra_config": {
+  },
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "name": "AltamiraDemo",
+  "port": 8080,
+  "endpoints": [
+    {
+      "endpoint": "/get/{id}/deny",
+      "method": "GET",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getbyid?id={id}",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": false,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ],
+          "deny": [
+            "email",
+            "name",
+            "city",
+            "website"
+          ],
+          "group": "kullanıcı"
+        }
+      ]
+    },
+    {
+      "endpoint": "/get/{id}/allow",
+      "method": "GET",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/api/persons/getbyid?id={id}",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": false,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ],
+          "allow": [
+            "email",
+            "name",
+            "city"
+          ],
+          "group": "kullanıcı"
+        }
+      ]
+    }
+  ]
+}

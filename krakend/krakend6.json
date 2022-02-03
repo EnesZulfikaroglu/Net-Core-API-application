@@ -1,0 +1,42 @@
+{
+  "version": 2,
+  "extra_config": {
+  },
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "name": "AltamiraDemo",
+  "port": 8080,
+  "endpoints": [
+    {
+      "endpoint": "/static",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/api/fail-endpoint",
+          "encoding": "json",
+          "sd": "custom",
+          "method": "GET",
+          "extra_config": {},
+          "is_collection": true,
+          "disable_host_sanitize": true,
+          "host": [
+            "http://persons-api:80"
+          ]
+        }
+      ],
+      "extra_config": {
+        "github.com/devopsfaith/krakend/proxy": {
+            "static": {
+                "strategy": "errored",
+                "data": {
+                    "error": {
+                        "message": "Hata durumunda bu mesaj döndürülsün"
+                    }
+                }
+            }
+          }
+      }
+    }
+  ]
+}
