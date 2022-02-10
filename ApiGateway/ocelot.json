@@ -1,28 +1,58 @@
 {
   "Routes": [
     {
+      "UseServiceDiscovery": true,
+      "ServiceName": "EmployeeService",
       "UpstreamPathTemplate": "/employee/getall",
       "UpstreamHttpMethod": [ "Get" ],
 
       "DownstreamPathTemplate": "/api/persons/getall",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 9000
-        }
-      ]
+      "FileCacheOptions": {
+        "TtlSeconds": 30,
+        "Region": "GatewayGetAll"
+      },
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "20s",
+        "PeriodTimespan": 5,
+        "Limit": 2
+      }
+    },
+
+    {
+      "UseServiceDiscovery": true,
+      "ServiceName": "EmployeeService",
+      "UpstreamPathTemplate": "/fail",
+      "UpstreamHttpMethod": [ "Get" ],
+
+      "DownstreamPathTemplate": "/asdasd",
+      "DownstreamScheme": "http",
+      "Key": "fail"
+    },
+
+    {
+      "UseServiceDiscovery": true,
+      "ServiceName": "EmployeeService",
+      "UpstreamPathTemplate": "/sleep",
+      "UpstreamHttpMethod": [ "Get" ],
+
+      "DownstreamPathTemplate": "/api/persons/fail-endpoint",
+      "DownstreamScheme": "http",
+      "Key": "sleep",
+      "FileCacheOptions": {
+        "TtlSeconds": 10,
+        "Region": "GatewaySleep"
+      }
     },
 
     {
       "DownstreamPathTemplate": "/api/{everything}",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 9000
-        }
-      ],
+
+      "UseServiceDiscovery": true,
+      "ServiceName": "EmployeeService",
       "UpstreamPathTemplate": "/test/{everything}",
       "UpstreamHttpMethod": [ "Get", "Post" ]
     },
@@ -31,15 +61,11 @@
       "UpstreamPathTemplate": "/prio/priority",
       "Priority": 3,
       "UpstreamHttpMethod": [ "Get" ],
+      "UseServiceDiscovery": true,
+      "ServiceName": "EmployeeService",
 
       "DownstreamPathTemplate": "/api/persons/getall",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 9000
-        }
-      ]
+      "DownstreamScheme": "http"
     },
 
     {
@@ -49,12 +75,12 @@
 
       "DownstreamPathTemplate": "/api/persons/getbyid?id={id}",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 9000
-        }
-      ]
+      "UseServiceDiscovery": true,
+      "ServiceName": "EmployeeService",
+      "FileCacheOptions": {
+        "TtlSeconds": 60,
+        "Region": "GatewayPrio"
+      }
     },
 
     {
@@ -63,12 +89,9 @@
 
       "DownstreamPathTemplate": "/api/persons/getbyid?id={id}",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 9000
-        }
-      ]
+      "UseServiceDiscovery": true,
+      "ServiceName": "EmployeeService"
+
     },
 
     {
@@ -77,43 +100,32 @@
 
       "DownstreamPathTemplate": "/api/persons/getbyid?id={id}",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 9000
-        }
-      ]
+      "UseServiceDiscovery": true,
+      "ServiceName": "EmployeeService"
+
     },
 
     {
-      "DownstreamPathTemplate": "/api/persons/fail-endpoint",
-      "UpstreamPathTemplate": "/employee",
-      "UpstreamHttpMethod": [
-        "Get"
-      ],
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 9000
-        }
-      ],
-      "Key": "employee"
-    },
-    {
-      "DownstreamPathTemplate": "/api/persons/getbyid?id=3",
+      "DownstreamPathTemplate": "/api/persons/getbyid?id=1",
       "UpstreamPathTemplate": "/all",
       "UpstreamHttpMethod": [
         "Get"
       ],
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 9000
-        }
-      ],
+      "UseServiceDiscovery": true,
+      "ServiceName": "EmployeeService",
       "Key": "all"
+    },
+    {
+      "DownstreamPathTemplate": "/api/persons/getbyid?id=3",
+      "UpstreamPathTemplate": "/employee",
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
+      "DownstreamScheme": "http",
+      "UseServiceDiscovery": true,
+      "ServiceName": "EmployeeService",
+      "Key": "employee"
     },
 
     {
@@ -122,12 +134,8 @@
 
       "DownstreamPathTemplate": "/api/persons/protected",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 9000
-        }
-      ]
+      "UseServiceDiscovery": true,
+      "ServiceName": "EmployeeService"
     },
 
     {
@@ -138,12 +146,8 @@
       },
       "DownstreamPathTemplate": "/api/persons/protected",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 9000
-        }
-      ]
+      "UseServiceDiscovery": true,
+      "ServiceName": "EmployeeService"
     },
 
     {
@@ -152,30 +156,18 @@
 
       "DownstreamPathTemplate": "/api/auth/login",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 9000
-        }
-      ]
+      "UseServiceDiscovery": true,
+      "ServiceName": "EmployeeService"
     },
 
     {
+      "UseServiceDiscovery": true,
+      "ServiceName": "EmployeeService",
       "UpstreamPathTemplate": "/delegate",
       "UpstreamHttpMethod": [ "GET" ],
 
       "DownstreamPathTemplate": "/api/persons/getall",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 9000
-        }
-      ],
-
-      "DelegatingHandlers": [
-        "MyDelegatingHandler"
-      ]
+      "DownstreamScheme": "http"
     }
 
     /*{
@@ -204,7 +196,55 @@
         "all",
         "employee"
       ],
-      "UpstreamPathTemplate": "/aggregate"
+      "UpstreamPathTemplate": "/aggregate",
+      "Aggregator": "ResponseAggregator",
+      "FileCacheOptions": {
+        "TtlSeconds": 60,
+        "Region": "GatewayGetAll"
+      }
+    },
+
+    {
+      "RouteKeys": [
+        "all",
+        "employee",
+        "fail"
+      ],
+      "UpstreamPathTemplate": "/fail-aggregate",
+      "Aggregator": "ResponseAggregator"
+    },
+
+    {
+      "RouteKeys": [
+        "all",
+        "employee",
+        "sleep"
+      ],
+      "UpstreamPathTemplate": "/sleep-aggregate",
+      "Aggregator": "ResponseAggregator"
+    },
+
+    {
+      "RouteKeys": [
+        "all",
+        "employee"
+      ],
+      "UpstreamPathTemplate": "/default-aggregate"
     }
-  ]
+  ],
+
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:8000",
+    "ServiceDiscoveryProvider": {
+      "Host": "localhost",
+      "Port": 8500,
+      "Type": "Consul",
+      "RateLimitOptions": {
+        "DisableRateLimitHeaders": false,
+        "QuotaExceededMessage": "Too Many Requests",
+        "HttpStatusCode": 999,
+        "ClientIdHeader": "Test"
+      }
+    }
+  }
 }
