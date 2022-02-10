@@ -21,6 +21,8 @@ using TokenOptions = Core.Utilities.Security.Jwt.TokenOptions;
 using DataAccess.Concrete.EntityFramework;
 using WebAPI.Installers;
 using Core.Utilities.Cache;
+using WebAPI.Extensions;
+using Consul;
 
 namespace WebAPI
 {
@@ -46,7 +48,7 @@ namespace WebAPI
                     builder => builder.WithOrigins("http://localhost:3000"));
             });
 
-            var connection = Configuration.GetValue<string>("ConnectionStrings:LocalConnection");
+            var connection = Configuration.GetValue<string>("ConnectionStrings:DockerSqlConnection");
             services.AddDbContext<AltamiraDBContext>(options =>
             options.UseSqlServer(connection));
 
@@ -110,91 +112,13 @@ namespace WebAPI
                 });
 
             });
-            /*
-            services.AddSwaggerGen(s =>
-            {
-                s.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Version = "v1",
-                    Title = "Altamira",
-                    Description = "Persons API",
-                    Contact = new OpenApiContact
-                    {
-                        Name = "Enes Zulfikaroglu",
-                        Email = "enes.zulfikaroglu34@gmail.com",
-                        Url = new Uri("http://altamira.com.tr")
-                    },
-                });
 
-                s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = "JWT Authorization header using the Bearer scheme (Example: 'Bearer 12345abcdef')",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "Bearer"
-                });
-
-                s.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-                });
-
-            });
-            */
-            /*
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Altamira", Version = "v1" });
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
-                      Enter 'Bearer' [space] and then your token in the text input below.
-                      \r\n\r\nExample: 'Bearer 12345abcdef'",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
-                });
-
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            },
-                            Scheme = "oauth2",
-                            Name = "Bearer",
-                            In = ParameterLocation.Header,
-
-                        },
-                        new List<string>()
-                    }
-                });
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
-            });*/
-
+            services.ConfigureConsul(Configuration);
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {
@@ -222,6 +146,8 @@ namespace WebAPI
             });
 
             //PrepDB.PrepPopulation(app);
+
+            app.RegisterWithConsul(lifetime);
         }
     }
 }
