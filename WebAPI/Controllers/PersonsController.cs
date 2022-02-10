@@ -243,6 +243,13 @@ namespace WebAPI.Controllers
             return Ok(result.Data);
         }
 
+        [HttpGet("health")]
+        //[Authorize(Roles = "Admin")]
+        public IActionResult Health()
+        {
+            return Ok("app is working");
+        }
+
         /// <summary>
         /// Update a person on database - Admin authentication is required
         /// </summary>
