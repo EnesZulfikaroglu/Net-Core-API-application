@@ -1,20 +1,8 @@
 version: '3.6'
 
-networks:
-  localdev:
-    name: localdev
 
 services:
-    persons-api:
-        build: ./
-        restart: always
-        ports:
-            - "7000:80"
-        depends_on:
-            - ms-sql-server
-        networks:
-            - localdev
-
+    
     ms-sql-server:
         image:  mcr.microsoft.com/mssql/server:2017-latest-ubuntu
         container_name: ms-sql-server
@@ -26,16 +14,49 @@ services:
             - "1433:1433"
         networks:
             - localdev
-    
-    krakend_ce:
-        image: devopsfaith/krakend:1.4.1
-        volumes:
-            - ./krakend:/etc/krakend
+
+    s_consul:
+        container_name: c_consul
+        image: consul
         ports:
-            - "1234:1234"
-            - "8080:8080"
-            - "8090:8090"
-        depends_on:
-            - persons-api
+            - "8500:8500"
+            - "8600:8600/tcp"
+            - "8600:8600/udp"
         networks:
             - localdev
+
+    elasticsearch:
+       container_name: elasticsearch
+       image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+       ports:
+        - 9200:9200
+       volumes:
+        - elasticsearch-data:/usr/share/elasticsearch/data
+       environment:
+        - xpack.monitoring.enabled=true
+        - xpack.watcher.enabled=false
+        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        - discovery.type=single-node
+       networks:
+        - elastic
+
+    kibana:
+       container_name: kibana
+       image: docker.elastic.co/kibana/kibana:7.6.2
+       ports:
+        - 5601:5601
+       depends_on:
+        - elasticsearch
+       environment:
+        - ELASTICSEARCH_URL=http://localhost:9200
+       networks:
+        - elastic
+  
+networks:
+    elastic:
+        driver: bridge
+    localdev:
+        name: localdev
+
+volumes:
+  elasticsearch-data:

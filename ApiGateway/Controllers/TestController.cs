@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,18 @@ namespace ApiGateway.Controllers
     [ApiController]
     public class TestController : ControllerBase
     {
+        private readonly Logger _logger;
+
+        public TestController(Logger logger)
+        {
+            _logger = logger;
+        }
+
         [HttpGet("get")]
         public String Get()
         {
-            return "App is Working";
+            _logger.Information("App is working");
+            return "App is working";
         }
     }
 }

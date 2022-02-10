@@ -1,6 +1,5 @@
-using ApiGateway.Handlers;
-using Core.Utilities.Security.Encryption;
-using Core.Utilities.Security.Jwt;
+using ApiGateway.Handlers.DelegatingHandlers;
+using ApiGateway.Handlers.Aggregators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,10 +12,16 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using Ocelot.Provider.Consul;
+using Ocelot.Cache.CacheManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog;
+using Serilog.Exceptions;
+using Serilog.Formatting.Elasticsearch;
+using Serilog.Sinks.Elasticsearch;
 
 namespace ApiGateway
 {
@@ -34,6 +39,8 @@ namespace ApiGateway
         {
             services.AddControllers();
 
+            // Authentication
+            /*
             var authenticationProviderKey = "TestKey";
 
             Action<JwtBearerOptions> options = o =>
@@ -44,14 +51,50 @@ namespace ApiGateway
 
             services.AddAuthentication()
                 .AddJwtBearer(authenticationProviderKey, options);
+            */
+
+            // Ocelot
 
             services
                 .AddOcelot()
-                .AddDelegatingHandler<MyDelegatingHandler>();
+                .AddSingletonDefinedAggregator<ResponseAggregator>()
+                .AddDelegatingHandler<BaseDelegatingHandler>(true)
+                .AddCacheManager(x =>
+                {
+                    x.WithDictionaryHandle();
+                })
+                .AddConsul();
+
+
+            // Elasticsearch & Logger
+
+            string connectionStringByEnvironmentVariables = string.Empty;
+            string elasticSearchConnectionsStr = string.Empty;
+
+            elasticSearchConnectionsStr = Convert.ToString(Configuration["ElasticConfiguration:Uri"]);
+            connectionStringByEnvironmentVariables = "DefaultConnection";
+
+            var log = new LoggerConfiguration()
+                .Enrich.WithThreadId()
+                .Enrich.WithThreadName()
+                .Enrich.WithMachineName()
+                .Enrich.WithEnvironmentUserName()
+                .Enrich.WithExceptionDetails()
+                .Enrich.FromLogContext()
+                .WriteTo.Debug()
+                .WriteTo.Console()
+                .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(Configuration["ElasticConfiguration:Uri"]))
+                {
+                    AutoRegisterTemplate = true,
+                    CustomFormatter = new ElasticsearchJsonFormatter()
+                })
+                .CreateLogger();
+
+            services.AddSingleton(log);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -69,7 +112,7 @@ namespace ApiGateway
                 endpoints.MapControllers();
             });
 
-            app.UseOcelot().Wait();
+            await app.UseOcelot();
         }
     }
 }
