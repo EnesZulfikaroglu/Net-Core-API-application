@@ -3,22 +3,21 @@
     {
       "UseServiceDiscovery": true,
       "ServiceName": "EmployeeService",
+      "UpstreamPathTemplate": "/employee/protected",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+
+      "DownstreamPathTemplate": "/api/persons/protected",
+      "DownstreamScheme": "http"
+    },
+
+    {
+      "UseServiceDiscovery": true,
+      "ServiceName": "EmployeeService",
       "UpstreamPathTemplate": "/employee/getall",
       "UpstreamHttpMethod": [ "Get" ],
 
       "DownstreamPathTemplate": "/api/persons/getall",
-      "DownstreamScheme": "http",
-      "FileCacheOptions": {
-        "TtlSeconds": 30,
-        "Region": "GatewayGetAll"
-      },
-      "RateLimitOptions": {
-        "ClientWhitelist": [],
-        "EnableRateLimiting": true,
-        "Period": "20s",
-        "PeriodTimespan": 5,
-        "Limit": 2
-      }
+      "DownstreamScheme": "http"
     },
 
     {
@@ -170,25 +169,6 @@
       "DownstreamScheme": "http"
     }
 
-    /*{
-      "DownstreamPathTemplate": "/api/persons/protected",
-      "UpstreamPathTemplate": "/auth",
-      "UpstreamHttpMethod": [
-        "Get"
-      ],
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 9000
-        }
-      ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "TestKey",
-        "AllowedScopes": []
-      }
-    }*/
-
   ],
   "Aggregates": [
     {
@@ -238,13 +218,7 @@
     "ServiceDiscoveryProvider": {
       "Host": "localhost",
       "Port": 8500,
-      "Type": "Consul",
-      "RateLimitOptions": {
-        "DisableRateLimitHeaders": false,
-        "QuotaExceededMessage": "Too Many Requests",
-        "HttpStatusCode": 999,
-        "ClientIdHeader": "Test"
-      }
+      "Type": "Consul"
     }
   }
 }
