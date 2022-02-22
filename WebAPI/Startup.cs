@@ -70,8 +70,9 @@ namespace WebAPI
             }
 
             var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
+            var authenticationProviderKey = "Bearer";
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(authenticationProviderKey, options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {

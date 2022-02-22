@@ -22,6 +22,8 @@ using Serilog;
 using Serilog.Exceptions;
 using Serilog.Formatting.Elasticsearch;
 using Serilog.Sinks.Elasticsearch;
+using Core.Utilities.Security.Jwt;
+using Core.Utilities.Security.Encryption;
 
 namespace ApiGateway
 {
@@ -91,6 +93,23 @@ namespace ApiGateway
                 .CreateLogger();
 
             services.AddSingleton(log);
+
+            var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
+            var authenticationProviderKey = "Bearer";
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(authenticationProviderKey, options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidIssuer = tokenOptions.Issuer,
+                    ValidAudience = tokenOptions.Audience,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
